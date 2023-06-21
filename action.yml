@@ -1,0 +1,31 @@
+name: 'rust-toolchain-toml'
+author: 'Martin Kröning'
+description: 'Installs the rust-toolchain.toml'
+branding:
+  icon: activity
+  color: red
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Get channel from rust-toolchain.toml
+      id: get_channel
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq '.toolchain.channel' rust-toolchain.toml
+    - name: Get components from rust-toolchain.toml
+      id: get_components
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq '.toolchain.components[]' rust-toolchain.toml | tr '\n' ','
+    - name: Get targets from rust-toolchain.toml
+      id: get_targets
+      uses: mikefarah/yq@master
+      with:
+        cmd: yq '.toolchain.targets[]' rust-toolchain.toml | tr '\n' ','
+    - name: Install Rust Toolchain
+      uses: dtolnay/rust-toolchain@master
+      with:
+        toolchain: ${{ steps.get_channel.outputs.result }}
+        components: ${{ steps.get_components.outputs.result }}
+        targets: ${{ steps.get_targets.outputs.result }}
