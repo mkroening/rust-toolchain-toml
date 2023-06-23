@@ -8,24 +8,42 @@ branding:
 runs:
   using: 'composite'
   steps:
+    - name: Download yq
+      run: |
+        : download yq
+        case ${{runner.os}} in
+          Linux)
+            YQ_BINARY=yq_linux_amd64
+            ;;
+
+          Windows)
+            YQ_BINARY=yq_windows_amd64.exe
+            ;;
+
+          macOS)
+            YQ_BINARY=yq_darwin_amd64
+            ;;
+
+          *)
+            echo "Unknown OS ${{runner.os}}"
+            exit 1
+            ;;
+        esac
+
+        curl --proto '=https' --tlsv1.2 -fsSL --retry 10 "https://github.com/mikefarah/yq/releases/latest/download/$YQ_BINARY" -o '${{ runner.temp }}/yq'
+        chmod +x '${{ runner.temp }}/yq'
+      shell: bash
     - name: Get channel from rust-toolchain.toml
-      id: get_channel
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq '.toolchain.channel' rust-toolchain.toml
-    - name: Get components from rust-toolchain.toml
-      id: get_components
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq '.toolchain.components[]' rust-toolchain.toml | tr '\n' ','
-    - name: Get targets from rust-toolchain.toml
-      id: get_targets
-      uses: mikefarah/yq@master
-      with:
-        cmd: yq '.toolchain.targets[]' rust-toolchain.toml | tr '\n' ','
+      id: parse_toml
+      run: |
+        : parse toml
+        echo "channel=$('${{ runner.temp }}/yq' '.toolchain.channel' rust-toolchain.toml)" >> $GITHUB_OUTPUT
+        echo "components=$('${{ runner.temp }}/yq' '.toolchain.components[]' rust-toolchain.toml | tr '\n' ',')" >> $GITHUB_OUTPUT
+        echo "targets=$('${{ runner.temp }}/yq' '.toolchain.targets[]' rust-toolchain.toml | tr '\n' ',')" >> $GITHUB_OUTPUT
+      shell: bash
     - name: Install Rust Toolchain
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: ${{ steps.get_channel.outputs.result }}
-        components: ${{ steps.get_components.outputs.result }}
-        targets: ${{ steps.get_targets.outputs.result }}
+        toolchain: ${{ steps.parse_toml.outputs.channel }}
+        components: ${{ steps.parse_toml.outputs.components }}
+        targets: ${{ steps.parse_toml.outputs.targets }}
