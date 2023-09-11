@@ -1,9 +1,15 @@
 name: 'rust-toolchain-toml'
 author: 'Martin Kröning'
-description: 'Installs the rust-toolchain.toml'
+description: 'Installs the Rust toolchain from a toolchain file (rust-toolchain.toml)'
 branding:
   icon: activity
   color: red
+
+inputs:
+  toolchain-file:
+    description: 'Path to the toolchain file'
+    required: false
+    default: 'rust-toolchain.toml'
 
 runs:
   using: 'composite'
@@ -33,13 +39,13 @@ runs:
         curl --proto '=https' --tlsv1.2 -fsSL --retry 10 "https://github.com/mikefarah/yq/releases/latest/download/$YQ_BINARY" -o '${{ runner.temp }}/yq'
         chmod +x '${{ runner.temp }}/yq'
       shell: bash
-    - name: Get channel from rust-toolchain.toml
+    - name: Get channel from ${{ inputs.toolchain-file }}
       id: parse_toml
       run: |
         : parse toml
-        echo "channel=$('${{ runner.temp }}/yq' '.toolchain.channel' rust-toolchain.toml)" >> $GITHUB_OUTPUT
-        echo "components=$('${{ runner.temp }}/yq' '.toolchain.components[]' rust-toolchain.toml | tr '\n' ',')" >> $GITHUB_OUTPUT
-        echo "targets=$('${{ runner.temp }}/yq' '.toolchain.targets[]' rust-toolchain.toml | tr '\n' ',')" >> $GITHUB_OUTPUT
+        echo "channel=$('${{ runner.temp }}/yq' '.toolchain.channel' ${{ inputs.toolchain-file }})" >> $GITHUB_OUTPUT
+        echo "components=$('${{ runner.temp }}/yq' '.toolchain.components[]' ${{ inputs.toolchain-file }} | tr '\n' ',')" >> $GITHUB_OUTPUT
+        echo "targets=$('${{ runner.temp }}/yq' '.toolchain.targets[]' ${{ inputs.toolchain-file }} | tr '\n' ',')" >> $GITHUB_OUTPUT
       shell: bash
     - name: Install Rust Toolchain
       uses: dtolnay/rust-toolchain@master

@@ -12,7 +12,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
-      - run: mv rust-toolchain-full.toml rust-toolchain.toml
+      - run: cp rust-toolchain-full.toml rust-toolchain.toml
       - uses: ./
-      - run: mv rust-toolchain-empty.toml rust-toolchain.toml
+      - run: cp rust-toolchain-empty.toml rust-toolchain.toml
       - uses: ./
+      - run: cp rust-toolchain-full.toml .github/rust-toolchain.toml
+      - uses: ./
+        with:
+          toolchain-file: '.github/rust-toolchain.toml'
