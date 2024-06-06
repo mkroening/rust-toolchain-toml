@@ -11,7 +11,7 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - run: cp rust-toolchain-full.toml rust-toolchain.toml
       - uses: ./
       - run: cp rust-toolchain-empty.toml rust-toolchain.toml
