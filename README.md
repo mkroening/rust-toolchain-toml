@@ -28,6 +28,23 @@ jobs:
       - run: cargo test --all-features
 ```
 
+## Inputs
+
+All inputs are optional.
+
+<table>
+<tr>
+  <th>Name</th>
+  <th>Description</th>
+</tr>
+<tr>
+  <td><code>toolchain-file</code></td>
+  <td>
+    Path to a <code>rust-toolchain.toml</code>.
+  </td>
+</tr>
+</table>
+
 ## License
 
 The scripts and documentation in this project are released under the [MIT
