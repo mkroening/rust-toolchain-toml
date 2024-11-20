@@ -44,7 +44,7 @@ runs:
             ;;
         esac
 
-        curl --proto '=https' --tlsv1.2 -fsSL --retry 10 "https://github.com/mikefarah/yq/releases/latest/download/$YQ_BINARY" -o '${{ runner.temp }}/yq'
+        curl --proto '=https' --tlsv1.2 -fsSL --retry 10 "https://github.com/mikefarah/yq/releases/latest/download/$YQ_BINARY" --create-dirs --output '${{ runner.temp }}/yq'
         chmod +x '${{ runner.temp }}/yq'
       shell: bash
     - name: Get channel from ${{ inputs.toolchain-file }}
