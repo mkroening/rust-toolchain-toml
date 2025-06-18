@@ -27,15 +27,17 @@ runs:
         : download yq
         case ${{runner.os}} in
           Linux)
-            YQ_BINARY=yq_linux_amd64
+            OS=linux
+            EXE=
             ;;
 
           Windows)
-            YQ_BINARY=yq_windows_amd64.exe
+            OS=windows
+            EXE=.exe
             ;;
 
           macOS)
-            YQ_BINARY=yq_darwin_amd64
+            OS=darwin
             ;;
 
           *)
@@ -43,6 +45,31 @@ runs:
             exit 1
             ;;
         esac
+
+        case ${{runner.arch}} in
+          X86)
+            ARCH=386
+            ;;
+
+          X64)
+            ARCH=amd64
+            ;;
+
+          ARM)
+            ARCH=arm
+            ;;
+
+          ARM64)
+            ARCH=arm64
+            ;;
+
+          *)
+            echo "Unknown architecture ${{runner.arch}}"
+            exit 1
+            ;;
+        esac
+
+        YQ_BINARY="yq_${OS}_${ARCH}${EXE}"
 
         curl --proto '=https' --tlsv1.2 -fsSL --retry 10 "https://github.com/mikefarah/yq/releases/latest/download/$YQ_BINARY" --create-dirs --output '${{ runner.temp }}/yq'
         chmod +x '${{ runner.temp }}/yq'
