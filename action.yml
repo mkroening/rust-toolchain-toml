@@ -10,6 +10,10 @@ inputs:
     description: 'Path to the toolchain file'
     required: false
     default: 'rust-toolchain.toml'
+  toolchain:
+    description: Rust toolchain specification -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification
+    required: false
+    default: 'null'
 
 outputs:
   cachekey:
@@ -86,6 +90,6 @@ runs:
       id: rust-toolchain
       uses: dtolnay/rust-toolchain@master
       with:
-        toolchain: ${{ steps.parse_toml.outputs.channel != 'null' && steps.parse_toml.outputs.channel || 'stable' }}
+        toolchain: ${{ inputs.toolchain != 'null' && inputs.toolchain || steps.parse_toml.outputs.channel != 'null' && steps.parse_toml.outputs.channel || 'stable' }}
         components: ${{ steps.parse_toml.outputs.components }}
         targets: ${{ steps.parse_toml.outputs.targets }}

@@ -18,6 +18,12 @@ jobs:
       - run: |
           [[ ${{ steps.toolchain-full.outputs.cachekey }} == 20221231574b ]]
           [[ ${{ steps.toolchain-full.outputs.name }} == nightly-2023-01-01 ]]
+      - id: toolchain-full-nightly
+        uses: ./
+        with:
+          toolchain: nightly
+      - run: |
+          [[ ${{ steps.toolchain-full-nightly.outputs.name }} == nightly ]]
       - run: cp rust-toolchain-empty.toml rust-toolchain.toml
       - id: toolchain-empty
         uses: ./
