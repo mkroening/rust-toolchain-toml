@@ -42,6 +42,8 @@ All inputs are optional.
   <td>
     Path to a <code>rust-toolchain.toml</code>.
   </td>
+</tr>
+<tr>
   <td><code>toolchain</code></td>
   <td>
     Rustup toolchain specifier e.g. <code>stable</code>, <code>nightly</code>, <code>1.42.0</code>, <code>nightly-2022-01-01</code>.
