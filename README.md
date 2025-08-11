@@ -49,6 +49,14 @@ All inputs are optional.
     Rustup toolchain specifier e.g. <code>stable</code>, <code>nightly</code>, <code>1.42.0</code>, <code>nightly-2022-01-01</code>.
   </td>
 </tr>
+<tr>
+  <td><code>targets</code></td>
+  <td>Comma-separated string of additional targets to install e.g. <code>wasm32-unknown-unknown</code></td>
+</tr>
+<tr>
+  <td><code>components</code></td>
+  <td>Comma-separated string of additional components to install e.g. <code>clippy, rustfmt</code></td>
+</tr>
 </table>
 
 ## Outputs

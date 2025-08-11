@@ -14,6 +14,12 @@ inputs:
     description: Rust toolchain specification -- see https://rust-lang.github.io/rustup/concepts/toolchains.html#toolchain-specification
     required: false
     default: 'null'
+  targets:
+    description: Comma-separated list of target triples to install for this toolchain
+    required: false
+  components:
+    description: Comma-separated list of components to be additionally installed
+    required: false
 
 outputs:
   cachekey:
@@ -91,5 +97,5 @@ runs:
       uses: dtolnay/rust-toolchain@master
       with:
         toolchain: ${{ inputs.toolchain != 'null' && inputs.toolchain || steps.parse_toml.outputs.channel != 'null' && steps.parse_toml.outputs.channel || 'stable' }}
-        components: ${{ steps.parse_toml.outputs.components }}
-        targets: ${{ steps.parse_toml.outputs.targets }}
+        components: ${{ format('{0},{1}', inputs.components, steps.parse_toml.outputs.components) }}
+        targets: ${{ format('{0},{1}', inputs.targets, steps.parse_toml.outputs.targets) }}

@@ -29,7 +29,13 @@ jobs:
         uses: ./
       - run: |
           [[ ${{ steps.toolchain-empty.outputs.name }} == stable ]]
+      - uses: ./
+        with:
+          targets: x86_64-unknown-none
+          components: llvm-tools-preview
       - run: cp rust-toolchain-full.toml .github/rust-toolchain.toml
       - uses: ./
         with:
           toolchain-file: '.github/rust-toolchain.toml'
+          targets: x86_64-unknown-none
+          components: llvm-tools-preview
